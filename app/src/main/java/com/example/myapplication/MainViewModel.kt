@@ -71,29 +71,37 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun startNewLecture(): Int {
+    fun startNewLecture(SSID: String): Int {
         var maxId = 0
         firebaseRepository.lectureDataState.value.forEach {
             if (it.id != null && maxId < it.id) {
                 maxId = it.id
             }
         }
+        firebaseRepository.startLecture(Lecture(
+            maxId,
+            _currentUserState.value?.id?.toString() ?: throw Exception("UNAUTHORIZED"),
+            SSID
+        ))
         return (maxId + 1)
     }
 
-    fun addLecture(lectureId: String): Boolean {
-        val exists = firebaseRepository.lectureDataState.value.any {
-            it.id == lectureId.toInt() && it.userId == _currentUserState.value?.id?.toString()
+    fun addVisit(lectureId: String, SSID: String): Boolean {
+        val exists = firebaseRepository.lectureVisitsDataState.value.any {
+            it.lectureId == lectureId.toInt() && it.userId == _currentUserState.value?.id
         }
-        if (!exists) {
-            firebaseRepository.addLecture(
-                Lecture(
+        val lectureExist = firebaseRepository.lectureDataState.value.any{
+            it.id == lectureId.toInt() && SSID == it.wifiSSID
+        }
+        if (!exists && lectureExist) {
+            firebaseRepository.addLectureVisit(
+                LectureVisit(
                     lectureId.toInt(),
-                    _currentUserState.value?.id?.toString()
+                    _currentUserState.value?.id
                 )
             )
         }
-        return !exists
+        return !exists && lectureExist
     }
 
     enum class State {

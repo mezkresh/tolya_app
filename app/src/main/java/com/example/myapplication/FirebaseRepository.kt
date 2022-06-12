@@ -3,6 +3,7 @@ package com.example.myapplication
 import android.util.Log
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +22,9 @@ class FirebaseRepository() {
     private val _lecturesDataState = MutableStateFlow<List<Lecture>>(arrayListOf())
     val lectureDataState: StateFlow<List<Lecture>> = _lecturesDataState
 
+    private val _lectureVisitsDataState = MutableStateFlow<List<LectureVisit>>(arrayListOf())
+    val lectureVisitsDataState: StateFlow<List<LectureVisit>> = _lectureVisitsDataState
+
     val _usersDataSate = MutableStateFlow<List<User>>(arrayListOf())
 
     init {
@@ -30,7 +34,9 @@ class FirebaseRepository() {
         val lectures: DatabaseReference = databaseReference.child("Lectures")
         val attendanceRegister: DatabaseReference = databaseReference.child("Attendance Register")
         val userData: DatabaseReference = databaseReference.child("User Data")
-
+        val visits: DatabaseReference = databaseReference.child("LectureVisits")
+        val subjects: DatabaseReference = databaseReference.child("Subject")
+        val subjectGroup: DatabaseReference = databaseReference.child("SubjectsGroup")
         studentData.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 _studentsState.value = snapshot.children.mapNotNull {
@@ -84,6 +90,37 @@ class FirebaseRepository() {
             }
 
         })
+        visits.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                _lectureVisitsDataState.value = snapshot.children.mapNotNull {
+                    it.getValue(LectureVisit::class.java)
+                }.toList()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
+        subjects.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
+        subjectGroup.addValueEventListener(object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
     fun login(username: String, password: String): User? {
@@ -113,13 +150,20 @@ class FirebaseRepository() {
         studentData.child(userId.toString()).setValue(Student(userId, group))
     }
 
-    fun addLecture(lecture: Lecture){
+    fun startLecture(lecture: Lecture){
+        val firebaseDatabase = Firebase.database
+        val databaseReference = firebaseDatabase.reference
+        val lectureData: DatabaseReference = databaseReference.child("Lectures")
+        lectureData.child(lecture.id.toString()).setValue(lecture)
+    }
+
+    fun addLectureVisit(lecture: LectureVisit){
         val firebaseDatabase: FirebaseDatabase = Firebase.database
         val databaseReference: DatabaseReference =
             firebaseDatabase.reference
-        val lectureData: DatabaseReference = databaseReference.child("Lectures")
-        val newUserId = (_lecturesDataState.value.size) + 1
-        lectureData.child(newUserId.toString()).setValue(lecture)
+        val lectureData: DatabaseReference = databaseReference.child("LectureVisits")
+        val newEntryId = (_lectureVisitsDataState.value.size) + 1
+        lectureData.child(newEntryId.toString()).setValue(lecture)
     }
 
 

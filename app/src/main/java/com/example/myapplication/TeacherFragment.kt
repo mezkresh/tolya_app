@@ -1,8 +1,13 @@
 package com.example.myapplication
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.net.wifi.SupplicantState
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -15,6 +20,7 @@ import com.google.zxing.common.BitMatrix
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+
 
 class TeacherFragment : Fragment(R.layout.teacher_fragment_layout) {
 
@@ -32,11 +38,20 @@ class TeacherFragment : Fragment(R.layout.teacher_fragment_layout) {
             this.adapter = adapter
         }
         binding.start.setOnClickListener {
-            currentLectureId = viewModel.startNewLecture()
-            adapter.submitList(listOf())
-            generateBarcode(currentLectureId.toString())
-            binding.start.isVisible = false
-            binding.end.isVisible = true
+            val ssid = getWifiSSID()
+            ssid?.let {
+                currentLectureId = viewModel.startNewLecture(it)
+                adapter.submitList(listOf())
+                generateBarcode(currentLectureId.toString())
+                binding.start.isVisible = false
+                binding.end.isVisible = true
+            } ?: run {
+                Toast.makeText(
+                    requireContext(),
+                    "Похоже вы не подключены к точке доступа WIFI",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
 
         binding.end.setOnClickListener {
@@ -61,7 +76,18 @@ class TeacherFragment : Fragment(R.layout.teacher_fragment_layout) {
 
     }
 
-    fun generateBarcode(lectureId: String) {
+    private fun getWifiSSID(): String? {
+        val wifiManager =
+            requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager?
+
+        val wifiInfo: WifiInfo = wifiManager!!.connectionInfo
+        return if (wifiInfo.supplicantState == SupplicantState.COMPLETED) {
+            wifiInfo.ssid
+        } else null
+
+    }
+
+    private fun generateBarcode(lectureId: String) {
         val multiFormatWriter = MultiFormatWriter()
 
         val bitMatrix: BitMatrix =
