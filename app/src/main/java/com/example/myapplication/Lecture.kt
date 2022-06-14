@@ -19,7 +19,7 @@ data class LectureVisit(
 @IgnoreExtraProperties
 data class Subject(
     val id: Int? = null,
-    val name: String? = null,
+    val title: String? = null,
     val teacherId: Int? = null,
 )
 

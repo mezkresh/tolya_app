@@ -18,7 +18,7 @@ private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<String>() {
     }
 }
 
-class CustomAdapter : ListAdapter<String, CustomAdapter.ViewHolder>(DIFF_CALLBACK) {
+class LectureVisitAdapter : ListAdapter<String, LectureVisitAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(R.id.textView)

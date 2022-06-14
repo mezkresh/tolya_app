@@ -20,9 +20,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _currentUserState = MutableStateFlow<User?>(null)
     val currentUser: StateFlow<User?> = _currentUserState
 
-    val users: StateFlow<List<User>> = firebaseRepository._usersDataSate
+    val users: StateFlow<List<User>> = firebaseRepository.userDataState
     val lecture: StateFlow<List<Lecture>> = firebaseRepository.lectureDataState
     private val flowStartPolicy = SharingStarted.WhileSubscribed(5000L)
+    val subjects: StateFlow<List<Subject>> =
+        firebaseRepository.subjectDataState.combine(_currentUserState) { subjects, user ->
+            subjects.filter { subject ->
+                subject.teacherId == user?.id
+            }
+        }.stateIn(viewModelScope, flowStartPolicy, listOf())
 //
 //    val groups = firebaseRepository.lectureDataState.mapLatest { lectures ->
 //        lectures.map { it.group }.toSortedSet().toList()
@@ -78,11 +84,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 maxId = it.id
             }
         }
-        firebaseRepository.startLecture(Lecture(
-            maxId,
-            _currentUserState.value?.id?.toString() ?: throw Exception("UNAUTHORIZED"),
-            SSID
-        ))
+        firebaseRepository.startLecture(
+            Lecture(
+                maxId,
+                _currentUserState.value?.id?.toString() ?: throw Exception("UNAUTHORIZED"),
+                SSID
+            )
+        )
         return (maxId + 1)
     }
 
@@ -90,7 +98,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val exists = firebaseRepository.lectureVisitsDataState.value.any {
             it.lectureId == lectureId.toInt() && it.userId == _currentUserState.value?.id
         }
-        val lectureExist = firebaseRepository.lectureDataState.value.any{
+        val lectureExist = firebaseRepository.lectureDataState.value.any {
             it.id == lectureId.toInt() && SSID == it.wifiSSID
         }
         if (!exists && lectureExist) {
@@ -102,6 +110,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
         return !exists && lectureExist
+    }
+
+    fun addSubject(title: String) {
+        val newId = (firebaseRepository.subjectDataState.value.lastOrNull()?.id ?: 0) + 1
+        firebaseRepository.addSubject(
+            Subject(
+                newId,
+                title,
+                currentUser.value?.id
+            )
+        )
     }
 
     enum class State {
