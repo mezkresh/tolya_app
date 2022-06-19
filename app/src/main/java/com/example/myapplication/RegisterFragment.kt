@@ -46,15 +46,15 @@ class RegisterFragment : Fragment(R.layout.register_fragment_layout) {
             requireContext(),
             androidx.appcompat.R.layout.support_simple_spinner_dropdown_item
         )
-        // binding.group.adapter = adapter
+        binding.group.adapter = adapter
 
-//        mainViewModel.groups.onEach {
-//            val items = listOf("Выбрать группу...") + it
-//            adapter.clear()
-//            adapter.addAll(items)
-//            currentGroupList.value.clear()
-//            currentGroupList.value.addAll(items)
-//        }.launchIn(viewLifecycleOwner.lifecycleScope)
+        mainViewModel.groups.onEach {
+            val items = listOf("Выбрать группу...") + it
+            adapter.clear()
+            adapter.addAll(items)
+            currentGroupList.value.clear()
+            currentGroupList.value.addAll(items)
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
 
 
         binding.register.setOnClickListener {
@@ -74,7 +74,7 @@ class RegisterFragment : Fragment(R.layout.register_fragment_layout) {
             if (binding.patronymic.text.toString().isEmpty()) {
                 allDataCorrect = false
             }
-            if (binding.group.text.toString().isEmpty()) {
+            if (binding.group.selectedItemPosition != 0) {
                 allDataCorrect = false
             }
             binding.wrongData.isVisible = !allDataCorrect
@@ -100,7 +100,7 @@ class RegisterFragment : Fragment(R.layout.register_fragment_layout) {
                     if (userType == 0) {
                         mainViewModel.attachUserToGroup(
                             user,
-                            binding.group.text.toString()
+                            binding.group.selectedItem as String
                         )
                         val fragment = StudentFragment()
                         parentFragmentManager.commit {

@@ -31,6 +31,9 @@ class FirebaseRepository() {
     private val _subjectsDataState = MutableStateFlow<List<Subject>>(arrayListOf())
     val subjectDataState: StateFlow<List<Subject>> = _subjectsDataState
 
+    private val _subjectGroupDataState = MutableStateFlow<List<SubjectGroup>>(arrayListOf())
+    val subjectGroupDataState = _subjectGroupDataState
+
     init {
 
         val studentData: DatabaseReference = databaseReference.child("Student Data")
@@ -72,6 +75,7 @@ class FirebaseRepository() {
             }
 
             override fun onCancelled(error: DatabaseError) {
+                Log.w("lectures:onCancelled", error.toException())
             }
         })
         attendanceRegister.addValueEventListener(object : ValueEventListener {
@@ -80,6 +84,7 @@ class FirebaseRepository() {
             }
 
             override fun onCancelled(error: DatabaseError) {
+                Log.w("attRegister:onCancelled", error.toException())
             }
         })
         userData.addValueEventListener(object : ValueEventListener {
@@ -90,7 +95,7 @@ class FirebaseRepository() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Log.w("userData:onCancelled", error.toException())
             }
 
         })
@@ -102,7 +107,8 @@ class FirebaseRepository() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Log.w("visits:onCancelled", error.toException())
+
             }
         })
 
@@ -114,14 +120,14 @@ class FirebaseRepository() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Log.w("subjects:onCancelled", error.toException())
             }
 
         })
 
         subjectGroup.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                TODO("Not yet implemented")
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -181,6 +187,15 @@ class FirebaseRepository() {
         val lectureData: DatabaseReference = databaseReference.child("Subjects")
         val newEntryId = (_subjectsDataState.value.size) + 1
         lectureData.child(newEntryId.toString()).setValue(subject)
+    }
+
+    fun addSubjectGroup(subjectGroup: SubjectGroup){
+        val firebaseDatabase: FirebaseDatabase = Firebase.database
+        val databaseReference: DatabaseReference =
+            firebaseDatabase.reference
+        val lectureData: DatabaseReference = databaseReference.child("SubjectGroup")
+        val newEntryId = (_subjectGroupDataState.value.size) + 1
+        lectureData.child(newEntryId.toString()).setValue(subjectGroup)
     }
 
 

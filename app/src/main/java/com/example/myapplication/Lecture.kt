@@ -26,7 +26,12 @@ data class Subject(
 @IgnoreExtraProperties
 data class SubjectGroup(
     val id: Int? = null,
-    val groupId: Int? = null,
+    val subjectId: Int? = null,
+    val groupName: String? = null,
     val timeStart: String? = null,
-    val timeEnd: String? = null
+    val timeEnd: String? = null,
+    val dateOfWeeks: String? = null,
+    val dateStart: String? = null,
+    val dateEnd: String? = null,
+    val repeatMode: Int? = null
 )

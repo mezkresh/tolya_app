@@ -24,7 +24,7 @@ class TeacherSubjectListFragment : Fragment(R.layout.teacher_subject_list_fragme
         }
 
         val adapter = TeacherSubjectAdapter {
-            val fragment = Fragment() // TODO use subject to do move
+            val fragment = TeacherSubjectFragment() // TODO use subject to do move
             parentFragmentManager.commit {
                 addToBackStack("TeacherSubjectListFragment")
                 replace(id, fragment)
