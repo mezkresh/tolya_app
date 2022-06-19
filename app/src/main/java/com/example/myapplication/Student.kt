@@ -14,3 +14,9 @@ data class StudentSubjectGroup(
     val startTime: String?,
     val endTime: String?
 )
+
+data class TeacherSubjectGroup(
+    val subjectName: String?,
+    val startTime: String?,
+    val endTime: String?
+)

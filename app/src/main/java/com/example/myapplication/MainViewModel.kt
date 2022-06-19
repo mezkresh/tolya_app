@@ -125,6 +125,48 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 
+    fun getTeacherSubjectGroupList(date: Date, subjectId: Int): List<TeacherSubjectGroup> {
+        return firebaseRepository.subjectGroupDataState.value.filter {
+            val format = SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH)
+            val startDate = format.parse(it.dateStart ?: return@filter false) ?: return@filter false
+            val endDate = format.parse(it.dateEnd ?: return@filter false) ?: return@filter false
+            date in startDate..endDate && it.subjectId == subjectId
+        }.mapNotNull { subjectGroup ->
+            firebaseRepository.subjectDataState.value.firstOrNull { subject ->
+                subjectGroup.subjectId == subject.id
+            }?.let { subject ->
+                if (subject.teacherId == currentUser.value?.id) {
+                    TeacherSubjectGroup(
+                        subject.title,
+                        subjectGroup.timeStart,
+                        subjectGroup.timeEnd
+                    )
+                } else null
+            }
+        }
+    }
+
+    fun getTeacherSubjectGroupList(date: Date): List<TeacherSubjectGroup> {
+        return firebaseRepository.subjectGroupDataState.value.filter {
+            val format = SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH)
+            val startDate = format.parse(it.dateStart ?: return@filter false) ?: return@filter false
+            val endDate = format.parse(it.dateEnd ?: return@filter false) ?: return@filter false
+            date in startDate..endDate
+        }.mapNotNull { subjectGroup ->
+            firebaseRepository.subjectDataState.value.firstOrNull { subject ->
+                subjectGroup.subjectId == subject.id
+            }?.let { subject ->
+                if (subject.teacherId == currentUser.value?.id) {
+                    TeacherSubjectGroup(
+                        subject.title,
+                        subjectGroup.timeStart,
+                        subjectGroup.timeEnd
+                    )
+                } else null
+            }
+        }
+    }
+
     fun getStudentSubjectGroupList(date: Date): List<StudentSubjectGroup> {
         val groupName = firebaseRepository.studentsState.value.firstOrNull {
             it.userId == currentUser.value?.id

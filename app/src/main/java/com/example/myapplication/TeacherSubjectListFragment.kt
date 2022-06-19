@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -24,7 +25,11 @@ class TeacherSubjectListFragment : Fragment(R.layout.teacher_subject_list_fragme
         }
 
         val adapter = TeacherSubjectAdapter {
-            val fragment = TeacherSubjectFragment() // TODO use subject to do move
+            val fragment = TeacherSubjectFragment().apply {
+                arguments = bundleOf(
+                    "subject_id" to it.id
+                )
+            }
             parentFragmentManager.commit {
                 addToBackStack("TeacherSubjectListFragment")
                 replace(id, fragment)
