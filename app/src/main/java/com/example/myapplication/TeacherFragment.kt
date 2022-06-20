@@ -19,14 +19,19 @@ class TeacherFragment : Fragment(R.layout.teacher_fragment_layout) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = TeacherFragmentLayoutBinding.bind(view)
-        tabsAdapter = TeacherTabsAdapter(this)
+        tabsAdapter = TeacherTabsAdapter(this) { fragment ->
+            parentFragmentManager.commit {
+                addToBackStack("TeacherFragment")
+                replace(id, fragment)
+            }
+        }
         viewPager = binding.pager
         viewPager.adapter = tabsAdapter
     }
 
 }
 
-class TeacherTabsAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+class TeacherTabsAdapter(fragment: Fragment, private val navigate: (fragment: Fragment)-> Unit) : FragmentStateAdapter(fragment) {
     override fun getItemCount() = 2
 
     override fun createFragment(position: Int): Fragment =
@@ -35,7 +40,7 @@ class TeacherTabsAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
                 TeacherTimetableFragment()
             }
             1 ->{
-                TeacherSubjectListFragment()
+                TeacherSubjectListFragment(navigate)
             }
             else -> {
                 //Never happens

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.TeacherSubjectListFragmentLayoutBinding
 import kotlinx.coroutines.flow.onEach
 
-class TeacherSubjectListFragment : Fragment(R.layout.teacher_subject_list_fragment_layout) {
+class TeacherSubjectListFragment(private val navigate: (fragment: Fragment) -> Unit) : Fragment(R.layout.teacher_subject_list_fragment_layout) {
 
     private lateinit var binding: TeacherSubjectListFragmentLayoutBinding
     private val viewModel: MainViewModel by activityViewModels()
@@ -30,10 +30,7 @@ class TeacherSubjectListFragment : Fragment(R.layout.teacher_subject_list_fragme
                     "subject_id" to it.id
                 )
             }
-            parentFragmentManager.commit {
-                addToBackStack("TeacherSubjectListFragment")
-                replace(id, fragment)
-            }
+            navigate(fragment)
         }
         binding.subjectList.apply {
             layoutManager = LinearLayoutManager(context)
