@@ -6,8 +6,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.TeacherSubjectListFragmentLayoutBinding
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class TeacherSubjectListFragment(private val navigate: (fragment: Fragment) -> Unit) : Fragment(R.layout.teacher_subject_list_fragment_layout) {
@@ -36,8 +38,9 @@ class TeacherSubjectListFragment(private val navigate: (fragment: Fragment) -> U
             layoutManager = LinearLayoutManager(context)
             this.adapter = adapter
         }
+        adapter.submitList(viewModel.subjects.value)
         viewModel.subjects.onEach {
             adapter.submitList(it)
-        }
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
     }
 }
