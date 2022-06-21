@@ -134,7 +134,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
             val c = Calendar.getInstance()
             c.time = date
-            val dayOfWeek = c[Calendar.DAY_OF_WEEK]
+            val dayOfWeek = c.get(Calendar.DAY_OF_WEEK)
             val weerDay = if (Calendar.MONDAY == dayOfWeek) 2;
             else if (Calendar.TUESDAY == dayOfWeek) 3;
             else if (Calendar.WEDNESDAY == dayOfWeek) 4;
@@ -169,7 +169,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
             val c = Calendar.getInstance()
             c.time = date
-            val dayOfWeek = c[Calendar.DAY_OF_WEEK]
+            val dayOfWeek = c.get(Calendar.DAY_OF_WEEK)
             val weerDay = if (Calendar.MONDAY == dayOfWeek) 2;
             else if (Calendar.TUESDAY == dayOfWeek) 3;
             else if (Calendar.WEDNESDAY == dayOfWeek) 4;
@@ -206,7 +206,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
             val c = Calendar.getInstance()
             c.time = date
-            val dayOfWeek = c[Calendar.DAY_OF_WEEK]
+            val dayOfWeek = c.get(Calendar.DAY_OF_WEEK)
             val weerDay = if (Calendar.MONDAY == dayOfWeek) 2;
             else if (Calendar.TUESDAY == dayOfWeek) 3;
             else if (Calendar.WEDNESDAY == dayOfWeek) 4;
