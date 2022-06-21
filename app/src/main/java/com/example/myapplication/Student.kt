@@ -4,8 +4,8 @@ import com.google.firebase.database.IgnoreExtraProperties
 
 @IgnoreExtraProperties
 data class Student(
-    val userId: Int,
-    val group: String
+    val userId: Int? = null,
+    val group: String? = null
 )
 
 data class StudentSubjectGroup(

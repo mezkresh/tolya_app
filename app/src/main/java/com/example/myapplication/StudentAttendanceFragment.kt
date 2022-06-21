@@ -53,13 +53,16 @@ class StudentAttendanceFragment : Fragment(R.layout.student_attendance_fragment_
                         if (ActivityCompat.checkSelfPermission(
                                 requireActivity(),
                                 Manifest.permission.CAMERA
+                            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                                requireActivity(),
+                                Manifest.permission.ACCESS_FINE_LOCATION
                             ) == PackageManager.PERMISSION_GRANTED
                         ) {
                             cameraSource.start(binding.surfaceView.holder)
                         } else {
                             ActivityCompat.requestPermissions(
                                 requireActivity(),
-                                arrayOf(Manifest.permission.CAMERA),
+                                arrayOf(Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION),
                                 REQUEST_CAMERA_PERMISSION
                             )
                         }

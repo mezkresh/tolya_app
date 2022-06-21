@@ -53,6 +53,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             viewModelScope.launch {
                 val registeredUser = firebaseRepository.register(user)
                 localRepository.saveUserData(registeredUser)
+                _currentUserState.value = registeredUser
             }
         }
         return !userNameExists
