@@ -47,6 +47,7 @@ class RegisterFragment : Fragment(R.layout.register_fragment_layout) {
             requireContext(),
             androidx.appcompat.R.layout.support_simple_spinner_dropdown_item
         )
+        binding.student.isChecked = true
         binding.group.adapter = adapter
         binding.group.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
