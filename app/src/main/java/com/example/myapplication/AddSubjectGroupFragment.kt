@@ -78,7 +78,10 @@ class AddSubjectGroupFragment : Fragment(R.layout.add_subject_group_fragment_lay
     private fun showTimePicker(view: EditText) {
         TimePickerDialog(
             requireContext(),
-            { _, hourOfDay, minute -> view.setText("$hourOfDay:$minute") },
+            { _, hourOfDay, minute ->
+                val minuteStr = if (minute < 9) "0$minute" else minute.toString()
+                view.setText("$hourOfDay:$minuteStr")
+            },
             0,
             0,
             true
@@ -94,7 +97,7 @@ class AddSubjectGroupFragment : Fragment(R.layout.add_subject_group_fragment_lay
         DatePickerDialog(
             requireContext(),
             { _, cYear, cMonth, cDayOfMonth ->
-                view.setText("${cDayOfMonth}.${cMonth+1}.${cYear}")
+                view.setText("${cDayOfMonth}.${cMonth + 1}.${cYear}")
             }, year, month, day
         ).show()
     }
