@@ -41,7 +41,7 @@ class TeacherSubjectFragment : Fragment(R.layout.teacher_subject_fragment_layout
             this.adapter = adapter
         }
         binding.calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            val date = format.parse("${dayOfMonth}.${month}.${year}")
+            val date = format.parse("${dayOfMonth}.${month+1}.${year}")
             date?.let {
                 adapter.submitList(viewModel.getTeacherSubjectGroupList(it, subjectId))
                 adapter.chosenDate = it
