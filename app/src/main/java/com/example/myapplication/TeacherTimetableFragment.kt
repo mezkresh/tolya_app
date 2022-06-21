@@ -11,7 +11,7 @@ import com.example.myapplication.databinding.TeacherTimetableFragmentLayoutBindi
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TeacherTimetableFragment: Fragment(R.layout.teacher_timetable_fragment_layout) {
+class TeacherTimetableFragment(private val navigate: (fragment: Fragment)->Unit): Fragment(R.layout.teacher_timetable_fragment_layout) {
 
     private lateinit var binding: TeacherTimetableFragmentLayoutBinding
     private val viewModel: MainViewModel by activityViewModels()
@@ -22,10 +22,7 @@ class TeacherTimetableFragment: Fragment(R.layout.teacher_timetable_fragment_lay
         binding = TeacherTimetableFragmentLayoutBinding.bind(view)
         val adapter = TeacherSubjectGroupAdapter({
             val fragment = TeacherCurrentLectureFragment()
-            parentFragmentManager.commit {
-                addToBackStack("TeacherTimetableFragment")
-                replace(id, fragment)
-            }
+            navigate(fragment)
         }, Calendar.getInstance().time)
         binding.subjectList.apply {
             layoutManager = LinearLayoutManager(context)

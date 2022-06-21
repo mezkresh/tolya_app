@@ -37,7 +37,7 @@ class TeacherTabsAdapter(fragment: Fragment, private val navigate: (fragment: Fr
     override fun createFragment(position: Int): Fragment =
         when(position){
             0 -> {
-                TeacherTimetableFragment()
+                TeacherTimetableFragment(navigate)
             }
             1 ->{
                 TeacherSubjectListFragment(navigate)
