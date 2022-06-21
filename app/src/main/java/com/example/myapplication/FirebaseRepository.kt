@@ -43,7 +43,7 @@ class FirebaseRepository() {
         val userData: DatabaseReference = databaseReference.child("User Data")
         val visits: DatabaseReference = databaseReference.child("LectureVisits")
         val subjects: DatabaseReference = databaseReference.child("Subjects")
-        val subjectGroup: DatabaseReference = databaseReference.child("SubjectsGroup")
+        val subjectGroup: DatabaseReference = databaseReference.child("SubjectGroup")
         studentData.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 _studentsState.value = snapshot.children.mapNotNull {
@@ -127,7 +127,9 @@ class FirebaseRepository() {
 
         subjectGroup.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-
+                _subjectGroupDataState.value = snapshot.children.mapNotNull {
+                    it.getValue(SubjectGroup::class.java)
+                }.toList()
             }
 
             override fun onCancelled(error: DatabaseError) {

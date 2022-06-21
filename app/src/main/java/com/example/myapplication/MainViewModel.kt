@@ -5,11 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.coroutines.coroutineContext
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -27,9 +24,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val flowStartPolicy = SharingStarted.WhileSubscribed(5000L)
     val subjects: StateFlow<List<Subject>> =
         firebaseRepository.subjectDataState.combine(_currentUserState) { subjects, user ->
-            subjects.filter { subject ->
-                subject.teacherId == user?.id
-            }
+            user?.id?.let {
+                subjects.filter { subject ->
+                    subject.teacherId == it
+                }
+            } ?: listOf()
         }.stateIn(viewModelScope, flowStartPolicy, listOf())
 
     val groups = firebaseRepository.subjectGroupDataState.map { subjectGroup ->
@@ -126,11 +125,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getTeacherSubjectGroupList(date: Date, subjectId: Int): List<TeacherSubjectGroup> {
-        return firebaseRepository.subjectGroupDataState.value.filter {
+        val list = firebaseRepository.subjectGroupDataState.value.filter {
             val format = SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH)
             val startDate = format.parse(it.dateStart ?: return@filter false) ?: return@filter false
             val endDate = format.parse(it.dateEnd ?: return@filter false) ?: return@filter false
-            date in startDate..endDate && it.subjectId == subjectId
+            val daysOfWeek = it.dateOfWeeks?.split(",")?.map {  stringDay ->
+                stringDay.trim().toInt()
+            }
+            val c = Calendar.getInstance()
+            c.time = date
+            val dayOfWeek = c[Calendar.DAY_OF_WEEK]
+            val weerDay = if (Calendar.MONDAY == dayOfWeek) 2;
+            else if (Calendar.TUESDAY == dayOfWeek) 3;
+            else if (Calendar.WEDNESDAY == dayOfWeek) 4;
+            else if (Calendar.THURSDAY == dayOfWeek) 5;
+            else if (Calendar.FRIDAY == dayOfWeek) 6;
+            else if (Calendar.SATURDAY == dayOfWeek) 7;
+            else 0
+            date in startDate..endDate && it.subjectId == subjectId && daysOfWeek?.contains(weerDay) == true
         }.mapNotNull { subjectGroup ->
             firebaseRepository.subjectDataState.value.firstOrNull { subject ->
                 subjectGroup.subjectId == subject.id
@@ -144,6 +156,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 } else null
             }
         }
+        return list
     }
 
     fun getTeacherSubjectGroupList(date: Date): List<TeacherSubjectGroup> {
@@ -151,7 +164,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val format = SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH)
             val startDate = format.parse(it.dateStart ?: return@filter false) ?: return@filter false
             val endDate = format.parse(it.dateEnd ?: return@filter false) ?: return@filter false
-            date in startDate..endDate
+            val daysOfWeek = it.dateOfWeeks?.split(",")?.map {  stringDay ->
+                stringDay.trim().toInt()
+            }
+            val c = Calendar.getInstance()
+            c.time = date
+            val dayOfWeek = c[Calendar.DAY_OF_WEEK]
+            val weerDay = if (Calendar.MONDAY == dayOfWeek) 2;
+            else if (Calendar.TUESDAY == dayOfWeek) 3;
+            else if (Calendar.WEDNESDAY == dayOfWeek) 4;
+            else if (Calendar.THURSDAY == dayOfWeek) 5;
+            else if (Calendar.FRIDAY == dayOfWeek) 6;
+            else if (Calendar.SATURDAY == dayOfWeek) 7;
+            else 0
+            date in startDate..endDate && daysOfWeek?.contains(weerDay) == true
         }.mapNotNull { subjectGroup ->
             firebaseRepository.subjectDataState.value.firstOrNull { subject ->
                 subjectGroup.subjectId == subject.id
@@ -175,7 +201,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val format = SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH)
             val startDate = format.parse(it.dateStart ?: return@filter false) ?: return@filter false
             val endDate = format.parse(it.dateEnd ?: return@filter false) ?: return@filter false
-            date in startDate..endDate && it.groupName == groupName
+            val daysOfWeek = it.dateOfWeeks?.split(",")?.map {  stringDay ->
+                stringDay.trim().toInt()
+            }
+            val c = Calendar.getInstance()
+            c.time = date
+            val dayOfWeek = c[Calendar.DAY_OF_WEEK]
+            val weerDay = if (Calendar.MONDAY == dayOfWeek) 2;
+            else if (Calendar.TUESDAY == dayOfWeek) 3;
+            else if (Calendar.WEDNESDAY == dayOfWeek) 4;
+            else if (Calendar.THURSDAY == dayOfWeek) 5;
+            else if (Calendar.FRIDAY == dayOfWeek) 6;
+            else if (Calendar.SATURDAY == dayOfWeek) 7;
+            else 0
+            date in startDate..endDate && it.groupName == groupName && daysOfWeek?.contains(weerDay) == true
         }.mapNotNull { subjectGroup ->
             firebaseRepository.subjectDataState.value.firstOrNull { subject ->
                 subjectGroup.subjectId == subject.id

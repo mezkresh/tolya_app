@@ -28,7 +28,7 @@ private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TeacherSubjectGroup>(
 
 class TeacherSubjectGroupAdapter(private val onClick: () -> Unit, var chosenDate: Date) :
     ListAdapter<TeacherSubjectGroup, TeacherSubjectGroupAdapter.ViewHolder>(DIFF_CALLBACK) {
-    private val format = SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH)
+    private val format = SimpleDateFormat("HH:mm", Locale.ENGLISH)
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val buttonItemView: Button = view.findViewById(R.id.subject_name)

@@ -32,7 +32,7 @@ class TeacherTimetableFragment: Fragment(R.layout.teacher_timetable_fragment_lay
             this.adapter = adapter
         }
         binding.calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            val date = format.parse("${dayOfMonth}.${month}.${year}")
+            val date = format.parse("${dayOfMonth}.${month+1}.${year}")
             date?.let {
                 adapter.submitList(viewModel.getTeacherSubjectGroupList(it))
                 adapter.chosenDate = it

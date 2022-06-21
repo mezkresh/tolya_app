@@ -19,14 +19,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/start_date" />
-    <androidx.appcompat.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/day_of_week_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Дни недели"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/end_date" />
+    <com.example.myapplication.MultiSpinner
         android:id="@+id/day_of_week"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Дни недели"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/end_date" />
+        app:layout_constraintTop_toBottomOf="@+id/day_of_week_title" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/group"

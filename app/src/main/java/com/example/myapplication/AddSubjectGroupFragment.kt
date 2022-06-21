@@ -16,7 +16,10 @@ class AddSubjectGroupFragment : Fragment(R.layout.add_subject_group_fragment_lay
     private lateinit var binding: AddSubjectGroupFragmentLayoutBinding
     private val viewModel: MainViewModel by activityViewModels()
     private var subjectId: Int = -1
-    private val dayOfWeeks = mutableListOf<Int>()
+    private val dayOfWeeks = BooleanArray(6) { false }
+    private val daysOfWeekString =
+        arrayListOf("Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота")
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         subjectId = requireArguments().getInt("subject_id")
@@ -29,25 +32,39 @@ class AddSubjectGroupFragment : Fragment(R.layout.add_subject_group_fragment_lay
         bindPicker(binding.endTime, ::showTimePicker)
         bindPicker(binding.startDate, ::showDatePicker)
         bindPicker(binding.endDate, ::showDatePicker)
-
+        binding.dayOfWeek.setItems(
+            daysOfWeekString,
+            "Каждый день",
+            object : MultiSpinner.MultiSpinnerListener {
+                override fun onItemsSelected(selected: BooleanArray) {
+                    for (i in selected.indices) {
+                        dayOfWeeks[i] = selected[i]
+                    }
+                }
+            })
         binding.saveButton.setOnClickListener {
-            viewModel.addSubjectGroup(SubjectGroup(
-                -1,
-                subjectId,
-                binding.group.text.toString(),
-                binding.startTime.text.toString(),
-                binding.endTime.text.toString(),
-                dayOfWeeks.joinToString(),
-                binding.startDate.text.toString(),
-                binding.endDate.text.toString(),
-                if(binding.oneWeek.isChecked) 0 else if (binding.twoWeek.isChecked) 1 else -1
-                ))
+            viewModel.addSubjectGroup(
+                SubjectGroup(
+                    -1,
+                    subjectId,
+                    binding.group.text.toString(),
+                    binding.startTime.text.toString(),
+                    binding.endTime.text.toString(),
+                    dayOfWeeks.toList().mapIndexedNotNull { index, b ->
+                        if (b) index + 2
+                        else null
+                    }.joinToString(),
+                    binding.startDate.text.toString(),
+                    binding.endDate.text.toString(),
+                    if (binding.oneWeek.isChecked) 0 else if (binding.twoWeek.isChecked) 1 else -1
+                )
+            )
             parentFragmentManager.popBackStack()
         }
 
     }
 
-    private fun bindPicker(editText: EditText, func: (v: EditText)->Unit){
+    private fun bindPicker(editText: EditText, func: (v: EditText) -> Unit) {
         editText.setOnClickListener {
             func(it as EditText)
         }
@@ -76,8 +93,8 @@ class AddSubjectGroupFragment : Fragment(R.layout.add_subject_group_fragment_lay
 
         DatePickerDialog(
             requireContext(),
-            { _, year, month, dayOfMonth ->
-                view.setText("${dayOfMonth + 1}.${month + 1}.${year}")
+            { _, cYear, cMonth, cDayOfMonth ->
+                view.setText("${cDayOfMonth}.${cMonth+1}.${cYear}")
             }, year, month, day
         ).show()
     }
