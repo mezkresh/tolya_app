@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -50,7 +51,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun register(user: User): Boolean {
         val userNameExists = firebaseRepository.isUsernameExists(user.username!!)
         if (!userNameExists) {
-            viewModelScope.launch {
+            runBlocking {
                 val registeredUser = firebaseRepository.register(user)
                 localRepository.saveUserData(registeredUser)
                 _currentUserState.value = registeredUser
@@ -61,7 +62,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun attachUserToGroup(user: User, group: String) {
         viewModelScope.launch {
-            firebaseRepository.attachUserToGroup(user, group)
+            firebaseRepository.attachUserToGroup(_currentUserState.value?:user, group)
         }
     }
 
@@ -93,7 +94,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 SSID
             )
         )
-        return (maxId + 1)
+        return (maxId)
     }
 
     fun addVisit(lectureId: String, SSID: String): Boolean {
@@ -221,7 +222,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 subjectGroup.subjectId == subject.id
             }?.let { subject ->
                 firebaseRepository.userDataState.value.firstOrNull { user ->
-                    user.id == subject.id
+                    user.id == subject.teacherId
                 }?.let {
                     StudentSubjectGroup(
                         subject.title,

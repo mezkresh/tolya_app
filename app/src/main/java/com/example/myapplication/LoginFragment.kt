@@ -58,8 +58,8 @@ class LoginFragment: Fragment(R.layout.login_fragment_layout) {
         binding.register.setOnClickListener {
             val fragment = RegisterFragment()
             parentFragmentManager.commit {
-                replace(id, fragment)
                 addToBackStack("Register")
+                replace(id, fragment)
             }
         }
     }

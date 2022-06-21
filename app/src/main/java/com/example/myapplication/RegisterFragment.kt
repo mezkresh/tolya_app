@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
@@ -122,12 +123,14 @@ class RegisterFragment : Fragment(R.layout.register_fragment_layout) {
                             binding.group.getItemAtPosition(currentGroup) as String
                         )
                         val fragment = StudentFragment()
+                        parentFragmentManager.popBackStack("Register", FragmentManager.POP_BACK_STACK_INCLUSIVE)
                         parentFragmentManager.commit {
                             replace(id, fragment)
                         }
 
                     } else {
                         val fragment = TeacherFragment()
+                        parentFragmentManager.popBackStack("Register", FragmentManager.POP_BACK_STACK_INCLUSIVE)
                         parentFragmentManager.commit {
                             replace(id, fragment)
                         }
