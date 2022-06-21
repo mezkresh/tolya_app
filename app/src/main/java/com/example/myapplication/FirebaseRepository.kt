@@ -161,7 +161,7 @@ class FirebaseRepository() {
 
     fun attachUserToGroup(user: User, group: String) {
         val userId =
-            user.id ?: _usersDataSate.value.findLast { it.username == user.username }!!.id!!
+            user.id ?: _usersDataSate.value.findLast { it.username == user.username }?.id ?: -1
         val studentData = databaseReference.child("Student Data")
         studentData.child(userId.toString()).setValue(Student(userId, group))
     }

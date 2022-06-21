@@ -23,6 +23,7 @@ class RegisterFragment : Fragment(R.layout.register_fragment_layout) {
     private val mainViewModel: MainViewModel by activityViewModels()
 
     private val currentGroupList = MutableStateFlow(mutableListOf<String>())
+    private var currentGroup = -1
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = RegisterFragmentLayoutBinding.bind(view)
@@ -47,6 +48,22 @@ class RegisterFragment : Fragment(R.layout.register_fragment_layout) {
             androidx.appcompat.R.layout.support_simple_spinner_dropdown_item
         )
         binding.group.adapter = adapter
+        binding.group.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                currentGroup = position
+                binding.group.getItemAtPosition(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+        }
 
         mainViewModel.groups.onEach {
             val items = listOf("Выбрать группу...") + it
@@ -58,6 +75,11 @@ class RegisterFragment : Fragment(R.layout.register_fragment_layout) {
 
 
         binding.register.setOnClickListener {
+            val userType = when (binding.userType.checkedRadioButtonId) {
+                R.id.student -> 0
+                R.id.teacher -> 1
+                else -> -1
+            }
             var allDataCorrect = true
             if (binding.username.text.toString().isEmpty()) {
                 allDataCorrect = false
@@ -74,17 +96,13 @@ class RegisterFragment : Fragment(R.layout.register_fragment_layout) {
             if (binding.patronymic.text.toString().isEmpty()) {
                 allDataCorrect = false
             }
-            if (binding.group.selectedItemPosition != 0) {
+            if (currentGroup == -1 && currentGroup == 0 && userType == 0) {
                 allDataCorrect = false
             }
             binding.wrongData.isVisible = !allDataCorrect
 
             if (allDataCorrect) {
-                val userType = when (binding.userType.checkedRadioButtonId) {
-                    R.id.student -> 0
-                    R.id.teacher -> 1
-                    else -> -1
-                }
+
                 val user = User(
                     username = binding.username.text.toString(),
                     password = binding.password.text.toString(),
@@ -100,7 +118,7 @@ class RegisterFragment : Fragment(R.layout.register_fragment_layout) {
                     if (userType == 0) {
                         mainViewModel.attachUserToGroup(
                             user,
-                            binding.group.selectedItem as String
+                            binding.group.getItemAtPosition(currentGroup) as String
                         )
                         val fragment = StudentFragment()
                         parentFragmentManager.commit {

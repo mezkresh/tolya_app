@@ -13,7 +13,7 @@ data class Lecture(
 @IgnoreExtraProperties
 data class LectureVisit(
     val lectureId: Int? = null,
-    val userId: Int? = null
+    val userId: Int? = null,
 )
 
 @IgnoreExtraProperties

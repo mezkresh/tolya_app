@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "534472476351",
-    "firebase_url": "https://clever-gadget-201210-default-rtdb.firebaseio.com",
-    "project_id": "clever-gadget-201210",
-    "storage_bucket": "clever-gadget-201210.appspot.com"
+    "project_number": "372457295236",
+    "firebase_url": "https://my-proj-121cc-default-rtdb.firebaseio.com",
+    "project_id": "my-proj-121cc",
+    "storage_bucket": "my-proj-121cc.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:534472476351:android:4b35420d1e30b8dd10e80a",
+        "mobilesdk_app_id": "1:372457295236:android:b9b032273fb923a8a1a1d1",
         "android_client_info": {
           "package_name": "com.example.myapplication"
         }
       },
       "oauth_client": [
         {
-          "client_id": "534472476351-q3r2934gbach782b0krbn67mui4oaifm.apps.googleusercontent.com",
+          "client_id": "372457295236-lm98c74alhgq1sbrlcmsigifagqkaup9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDmZWTu7rVrEmKW5ttuvYl4b3H45j91Xio"
+          "current_key": "AIzaSyBRbQXbMtLv3r6u-dV5yejwH38gjyRlJ2M"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "534472476351-q3r2934gbach782b0krbn67mui4oaifm.apps.googleusercontent.com",
+              "client_id": "372457295236-lm98c74alhgq1sbrlcmsigifagqkaup9.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
